@@ -1,0 +1,53 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[RequireComponent(typeof(CharacterController))]
+public class Character : MonoBehaviour
+{
+    
+    [SerializeField] private float _walkSpeed = 5;
+    [SerializeField] private float _runSpeed = 10;
+    [Header("gravity")]
+    [SerializeField] private float _gravityForce = 20;
+
+    CharacterController _cc;
+    private float _tmpSpeed;
+    
+    private void Start() {
+        _tmpSpeed = _walkSpeed;
+        _cc = GetComponent<CharacterController>();
+    }
+
+    private void Gravity() {
+         if (!_cc.isGrounded) 
+        {
+            transform.Translate(new Vector3(0, -1, 0) * Time.deltaTime * _gravityForce);
+        }
+    }
+
+    private void Move() {
+        //Run
+           if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            _tmpSpeed = _runSpeed;
+        }
+        else if(Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            _tmpSpeed = _walkSpeed;
+        } 
+
+        //movement
+        float h = Input.GetAxis("Horizontal");
+        transform.Translate(new Vector3(1, 0, 0) * Time.deltaTime * h * _tmpSpeed);
+
+        float v = Input.GetAxis("Vertical");
+        transform.Translate(new Vector3(0, 0, 1) * Time.deltaTime * v * _tmpSpeed);
+    }
+
+    private void Update() {
+        Move();
+        Gravity();
+    }
+}
